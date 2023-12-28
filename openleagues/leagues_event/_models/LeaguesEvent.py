@@ -2,6 +2,7 @@ from django.db import models
 from openleagues.leagues_event.models import Location
 from openleagues.common.models import TimeStampedUUIDModel
 import uuid
+
 FORMAT_CHOICES = [
         ("singles", "Singles"),
         ("doubles", "Doubles"),
@@ -37,7 +38,7 @@ STATUS = [
     ("open", "Open"),
     ("inprogress", "In Progress"),
     ("completed", "Completed"),
-    ("cancelled", ("Cancelled"))
+    ("cancelled", "Cancelled")
 ]
 
 class LeaguesEvent(TimeStampedUUIDModel):
