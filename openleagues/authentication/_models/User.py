@@ -30,7 +30,7 @@ class UserManager(BaseUserManager):
             email = self.normalize_email(email)
             self.email_validator(email)
         else:
-            raise ValidationError("User email required")
+            raise ValueError("User email required")
     
         user = self.model(
             username=username,
@@ -63,7 +63,7 @@ class UserManager(BaseUserManager):
             email = self.normalize_email(email)
             self.email_validator(email)
         else:
-            raise ValidationError("Admin password required")
+            raise ValueError("Admin email required")
         
         user = self.create_user(username, first_name, last_name, email, password, **extra_fields)
         user.save(using=self._db)
