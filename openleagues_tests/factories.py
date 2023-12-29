@@ -32,7 +32,7 @@ class LocationFactory(factory.django.DjangoModelFactory):
         model = Location
 
     state = "CO"
-    county = "Boulder"
+    city = "Boulder"
     zipcode = "80303"
 
 class LeaguesEventFactory(factory.django.DjangoModelFactory):
