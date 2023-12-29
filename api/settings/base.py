@@ -1,5 +1,5 @@
+from datetime import timedelta
 import environ
-
 from pathlib import Path
 
 env = environ.Env(DEBUG=(bool, False))
@@ -35,7 +35,9 @@ DJANGO_APPS = [
 SITE_ID = 1
 
 THIRD_PARTY_APPS = [
-    "rest_framework"
+    "rest_framework",
+    "djoser",
+    "rest_framework_simplejwt"
 ]
 
 LOCAL_APPS = [
@@ -46,6 +48,43 @@ LOCAL_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 AUTH_USER_MODEL = "authentication.User"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
+
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": (
+        "Bearer",
+        "JWT"
+    ),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "SIGNING_KEY": env("SIGNING_KEY"),
+    "AUTH_HEADER_NAME": "HTTP_AUTHENTICATION",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken")
+}
+
+# DJOSER = {
+#     "LOGIN_FIELD": "email",
+#     "USER_CREATE_PASSWORD_RETYPE": True,
+#     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
+#     "SEND_CONFIRMATION_EMAIL": True,
+#     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+#     "SET_PASSWORD_RETYPE": True,
+#     "PASSWORD_RESET_CONFIRM_RETYPE": True,
+#     "USERNAME_RESET_CONFIRM_URL": "email/reset/confirm/{uid}/{token}",
+#     "ACTIVATION_URL": "activate/{uid}/{token}",
+#     "SEND_ACTIVATION_EMAIL": True,
+#     "SERIALIZERS": {
+#         "user_create": "",
+#         "user": "",
+#         "current_user": "",
+#         "user_delete": ""
+#     }
+# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
