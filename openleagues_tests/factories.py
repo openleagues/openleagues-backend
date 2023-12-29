@@ -31,9 +31,9 @@ class LocationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Location
 
-    state = "CO"
-    city = "Boulder"
-    zipcode = "80303"
+    state = faker.state()
+    city = faker.city()
+    zipcode = faker.zipcode()
 
 class LeaguesEventFactory(factory.django.DjangoModelFactory):
     class Meta:
