@@ -1,8 +1,6 @@
 from openleagues.leagues_event.models import LeaguesEvent
 from openleagues.leagues_event.serializers import LeaguesEventSerializer
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
-from openleagues.leagues_event.permissions import IsOwnerOrReadOnly
 
 class LeaguesEventList(generics.ListCreateAPIView):
     queryset = LeaguesEvent.objects.all()
@@ -13,4 +11,3 @@ class LeaguesEventDetail(generics.RetrieveUpdateDestroyAPIView):
     # Change serializer for more information
     serializer_class = LeaguesEventSerializer
     lookup_field = "id"
-    #permission_classes = [IsAuthenticated]

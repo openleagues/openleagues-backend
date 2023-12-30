@@ -1,16 +1,6 @@
 import pytest
-from django.test import Client
 from openleagues.leagues_event.models import LeaguesEvent
-from openleagues.leagues_event.serializer import LeaguesEventSerializer
-
-@pytest.fixture
-def client():
-    return Client()
-
-# @pytest.fixture
-# def base_league_event(leagues_event_factory):
-#     new_event = leagues_event_factory.create()
-#     return new_event
+from openleagues.leagues_event.serializers import LeaguesEventSerializer
 
 @pytest.mark.django_db
 def test_leagues_event_list_get(client, base_league_event):
