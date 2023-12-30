@@ -1,7 +1,7 @@
 from django.db import models
 from openleagues.leagues_event.models import Location
 from openleagues.common.models import TimeStampedUUIDModel
-import uuid
+from openleagues.authentication.models import User
 
 FORMAT_CHOICES = [
         ("singles", "Singles"),
@@ -46,6 +46,7 @@ class LeaguesEvent(TimeStampedUUIDModel):
     class Meta:
         pass
     
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=255)
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
     start_week = models.DateField()

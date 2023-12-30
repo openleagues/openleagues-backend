@@ -1,5 +1,5 @@
 from openleagues.leagues_event.models import LeaguesEvent
-from openleagues.leagues_event.serializer import LeaguesEventSerializer
+from openleagues.leagues_event.serializers import LeaguesEventSerializer
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from openleagues.leagues_event.permissions import IsOwnerOrReadOnly

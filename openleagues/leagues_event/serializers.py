@@ -10,4 +10,4 @@ class LeaguesEventSerializer(serializers.ModelSerializer):
     location = LocationSerializer(read_only=True)
     class Meta:
         model = LeaguesEvent
-        exclude = ["pkid", "updated_at"]
+        exclude = ["pkid", "updated_at", "owner"]
