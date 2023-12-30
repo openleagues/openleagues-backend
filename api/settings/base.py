@@ -43,6 +43,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "openleagues.authentication",
     "openleagues.leagues_event",
+    "openleagues.teams",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
