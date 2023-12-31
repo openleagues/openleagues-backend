@@ -2,6 +2,7 @@ from django.db import models
 from openleagues.leagues_event.models import Location
 from openleagues.common.models import TimeStampedUUIDModel
 from openleagues.authentication.models import User
+from openleagues.teams.models import Team
 
 FORMAT_CHOICES = [
         ("singles", "Singles"),
@@ -56,8 +57,22 @@ class LeaguesEvent(TimeStampedUUIDModel):
     description = models.TextField()
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     minimum_level = models.CharField(max_length=10, choices=MINIMUM_LEVEL_CHOICES)
-    spots = models.PositiveIntegerField()
+    total_spots = models.PositiveIntegerField()
+    active_spots = models.PositiveIntegerField(null=True)
     status = models.CharField(max_length=15, choices=STATUS)
+
+    teams = models.ManyToManyField(Team, related_name='events')
 
     def __str__(self):
         return self.title
+    
+    def save(self, *args, **kwargs):
+        # Calculate the total number of users in all associated teams
+        total_users = sum(team.members.count() for team in self.teams.all())
+
+        # Update the spots field
+        self.active_spots = self.total_spots - total_users
+
+        # Call the original save method
+        super().save(*args, **kwargs)
+    
