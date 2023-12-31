@@ -1,6 +1,6 @@
 import pytest
 from pytest_factoryboy import register
-from openleagues_tests.factories import UserFactory,  LocationFactory, LeaguesEventFactory
+from openleagues_tests.factories import UserFactory,  LocationFactory, LeaguesEventFactory, TeamFactory
 from django.test import Client
 
 @pytest.fixture
@@ -11,6 +11,7 @@ def client():
 register(UserFactory)
 register(LocationFactory)
 register(LeaguesEventFactory)
+register(TeamFactory)
 
 @pytest.fixture
 def base_user(db, user_factory):
@@ -31,3 +32,9 @@ def base_league_event(db, leagues_event_factory):
 def base_location(db, location_factory):
     new_location = location_factory.create()
     return new_location
+
+@pytest.fixture
+def base_team(db, team_factory, user_factory):
+    new_team = team_factory.create()
+    new_team.members.add(user_factory.create())
+    return new_team
