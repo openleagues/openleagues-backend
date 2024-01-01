@@ -1,11 +1,13 @@
+from django.db.models.signals import post_save
 import factory
 from faker import Factory as FakerFactory
 from api.settings.base import AUTH_USER_MODEL
 from openleagues.leagues_event.models import Location, LeaguesEvent
+from openleagues.teams.models import Team
 
 faker = FakerFactory.create()
 
-
+@factory.django.mute_signals(post_save)
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = AUTH_USER_MODEL

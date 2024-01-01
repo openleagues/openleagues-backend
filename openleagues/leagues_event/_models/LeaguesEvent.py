@@ -2,6 +2,7 @@ from django.db import models
 from openleagues.leagues_event.models import Location
 from openleagues.common.models import TimeStampedUUIDModel
 from openleagues.authentication.models import User
+from openleagues.teams.models import Team
 
 FORMAT_CHOICES = [
         ("singles", "Singles"),
@@ -56,8 +57,13 @@ class LeaguesEvent(TimeStampedUUIDModel):
     description = models.TextField()
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     minimum_level = models.CharField(max_length=10, choices=MINIMUM_LEVEL_CHOICES)
-    spots = models.PositiveIntegerField()
+    total_spots = models.PositiveIntegerField()
+    active_spots = models.PositiveIntegerField(null=True, blank=True)
     status = models.CharField(max_length=15, choices=STATUS)
+
+    teams = models.ManyToManyField(Team, related_name='events', blank=True)
 
     def __str__(self):
         return self.title
+    
+    
