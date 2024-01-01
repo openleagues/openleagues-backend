@@ -4,7 +4,7 @@ from openleagues.teams.models import Team
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        exclude = exclude = ["pkid", "updated_at"]
+        fields = '__all__'
 
 class UserAddRemoveSerializer(serializers.Serializer):
     user_id = serializers.UUIDField()

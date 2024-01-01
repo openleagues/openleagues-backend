@@ -58,21 +58,12 @@ class LeaguesEvent(TimeStampedUUIDModel):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     minimum_level = models.CharField(max_length=10, choices=MINIMUM_LEVEL_CHOICES)
     total_spots = models.PositiveIntegerField()
-    active_spots = models.PositiveIntegerField(null=True)
+    active_spots = models.PositiveIntegerField(null=True, blank=True)
     status = models.CharField(max_length=15, choices=STATUS)
 
-    teams = models.ManyToManyField(Team, related_name='events')
+    teams = models.ManyToManyField(Team, related_name='events', blank=True)
 
     def __str__(self):
         return self.title
     
-    def save(self, *args, **kwargs):
-        # Calculate the total number of users in all associated teams
-        total_users = sum(team.members.count() for team in self.teams.all())
-
-        # Update the spots field
-        self.active_spots = self.total_spots - total_users
-
-        # Call the original save method
-        super().save(*args, **kwargs)
     

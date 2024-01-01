@@ -19,6 +19,12 @@ class LocationForm(forms.ModelForm):
 
 class LocationAdmin(admin.ModelAdmin):
     form = LocationForm
+    list_display = [
+        "id",
+        "state",
+        "city",
+        "zipcode",
+    ]
 
 admin.site.register(LeaguesEvent, LeaguesEventAdmin)
 admin.site.register(Location, LocationAdmin)
