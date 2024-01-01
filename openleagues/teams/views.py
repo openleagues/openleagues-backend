@@ -11,6 +11,7 @@ class TeamList(generics.ListCreateAPIView):
 class UserAddToTeamView(generics.UpdateAPIView):
     serializer_class = UserAddRemoveSerializer
     queryset = Team.objects.all()
+    lookup_field = "uid"
 
     def update(self, request, *args, **kwargs):
         team = self.get_object()
@@ -19,7 +20,7 @@ class UserAddToTeamView(generics.UpdateAPIView):
             return Response({'detail': 'This team is not public. New users cannot join.'}, status=status.HTTP_403_FORBIDDEN)
         
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        #serializer.is_valid(raise_exception=True)
 
         user_id = serializer.validated_data['user_id']
 
@@ -35,6 +36,7 @@ class UserAddToTeamView(generics.UpdateAPIView):
 class UserRemoveFromTeamView(generics.UpdateAPIView):
     serializer_class = UserAddRemoveSerializer
     queryset = Team.objects.all()
+    lookup_field = "uid"
 
     def update(self, request, *args, **kwargs):
         team = self.get_object()
