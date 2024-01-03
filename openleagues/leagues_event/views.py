@@ -1,5 +1,5 @@
 from openleagues.leagues_event.models import LeaguesEvent, Location
-from openleagues.leagues_event.serializers import LeaguesEventSerializer, LocationSerializer
+from openleagues.leagues_event.serializers import LeaguesEventSerializer, LeaguesEventDetailsSerializer, LocationSerializer
 from rest_framework import generics
 from rest_framework.validators import ValidationError
 
@@ -30,7 +30,7 @@ class LeaguesEventList(generics.ListCreateAPIView):
 class LeaguesEventDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = LeaguesEvent.objects.all()
     # Change serializer for more information
-    serializer_class = LeaguesEventSerializer
+    serializer_class = LeaguesEventDetailsSerializer
     lookup_field = "id"
 
 class LocationList(generics.ListCreateAPIView):
