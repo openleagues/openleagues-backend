@@ -1,24 +1,14 @@
 from django.db import models
-from openleagues.leagues_event.models import Location
+from .MatchFormat import MatchFormat
+from .Location import Location
 from openleagues.common.models import TimeStampedUUIDModel
 from openleagues.authentication.models import User
 from openleagues.teams.models import Team
 
-FORMAT_CHOICES = [
-        ("singles", "Singles"),
-        ("doubles", "Doubles"),
-        ("mixed", "Mixed"),
-    ]
-
-TEAM_TYPE_CHOICES = [
-    ("team", "Team"),
-    ("individual", "Individual"),
-]
-
 GENDER_CHOICES = [
     ("M", "Male"),
     ("F", "Female"),
-    ("all", "All"),
+    ("Mixed", "Mixed"),
 ]
 
 MINIMUM_LEVEL_CHOICES = [
@@ -52,18 +42,15 @@ class LeaguesEvent(TimeStampedUUIDModel):
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
     start_week = models.DateField()
     end_week = models.DateField()
-    format = models.CharField(max_length=10, choices=FORMAT_CHOICES)
-    team_type = models.CharField(max_length=15, choices=TEAM_TYPE_CHOICES)
     description = models.TextField()
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     minimum_level = models.CharField(max_length=10, choices=MINIMUM_LEVEL_CHOICES)
     total_spots = models.PositiveIntegerField()
     active_spots = models.PositiveIntegerField(null=True, blank=True)
-    status = models.CharField(max_length=15, choices=STATUS)
+    status = models.CharField(max_length=15, choices=STATUS, default="open")
 
-    teams = models.ManyToManyField(Team, related_name='events', blank=True)
+    match_format = models.OneToOneField(MatchFormat, on_delete=models.CASCADE, related_name='+', null=True, blank=False)
+    teams = models.ManyToManyField(Team, related_name='events')
 
     def __str__(self):
-        return self.title
-    
-    
+        return self.title  
