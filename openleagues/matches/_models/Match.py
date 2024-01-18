@@ -9,6 +9,6 @@ class Match(models.Model):
     leagues_event = models.ForeignKey(LeaguesEvent, related_name='matches', on_delete=models.CASCADE)
     score = models.OneToOneField(MatchScore, on_delete=models.CASCADE, null=True, blank=True)
     default_match = models.BooleanField(default=False)
-
+ 
     def __str__(self):
         return f"Match between {self.team1.name} and {self.team2.name} on {self.date}"

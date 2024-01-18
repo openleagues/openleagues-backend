@@ -3,10 +3,12 @@ from openleagues.teams.serializers import TeamSerializer, UserAddRemoveSerialize
 from openleagues.authentication.models import User
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 class TeamList(generics.ListCreateAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
+    permission_classes = (IsAuthenticated, )
 
 
 class UserAddToTeamView(generics.UpdateAPIView):
