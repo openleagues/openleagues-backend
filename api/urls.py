@@ -13,4 +13,5 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path("api/v1/leagues/", include("openleagues.leagues_event.urls")),
     path("api/v1/teams/", include("openleagues.teams.urls")),
+    path("api/v1/matches/", include("openleagues.matches.urls")),
 ]
