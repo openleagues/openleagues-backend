@@ -45,10 +45,9 @@ class LeaguesEventFactory(factory.django.DjangoModelFactory):
     location = factory.SubFactory(LocationFactory)
     start_week = faker.date_this_decade()
     end_week = faker.date_this_decade()
-    format = faker.random_element(elements=['singles', 'doubles', 'mixed'])
-    team_type = faker.random_element(elements=['team', 'individual'])
     description = faker.text()
     gender = faker.random_element(elements=['M', 'F', 'All'])
     minimum_level = faker.random_element(elements=['1.0', '3.0','4.5'])
-    spots = faker.random_digit()
+    total_spots = faker.random_digit()
+
     status = faker.random_element(elements=["open","inprogress","completed","cancelled"])

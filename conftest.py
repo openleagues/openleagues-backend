@@ -1,6 +1,6 @@
 import pytest
 from pytest_factoryboy import register
-from openleagues_tests.factories import UserFactory,  LocationFactory, LeaguesEventFactory, TeamFactory
+from openleagues_tests.factories import UserFactory,  LocationFactory, LeaguesEventFactory
 from django.test import Client
 
 @pytest.fixture
