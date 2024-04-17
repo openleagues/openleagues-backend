@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='leaguesevent',
             name='match_format',
-            field=models.OneToOneField(default=999, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='leagues_event.matchformat'),
+            field=models.OneToOneField(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='leagues_event.matchformat'),
             preserve_default=False,
         ),
     ]

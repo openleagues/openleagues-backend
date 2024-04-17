@@ -24,14 +24,12 @@ class TeamSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        print("HELLO---------------")
         members_data = validated_data.pop('members', [])
         team = Team.objects.create(**validated_data)
 
         # Add members to the team using UUIDs
         for member_uuid in members_data:
             user = User.objects.get(id=member_uuid)
-            print("DEFINETLY SHOULD HAVE ADDED")
             team.members.add(user)
 
         return team
