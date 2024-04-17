@@ -2,9 +2,8 @@ from django.db import models
 from openleagues.teams.models import Team
 from openleagues.leagues_event.models import LeaguesEvent
 from .MatchScore import MatchScore
-from openleagues.common.models import TimeStampedUUIDModel
 
-class Match(TimeStampedUUIDModel):
+class Match(models.Model):
     team1 = models.ForeignKey(Team, related_name='matches_as_team1', on_delete=models.CASCADE)
     team2 = models.ForeignKey(Team, related_name='matches_as_team2', on_delete=models.CASCADE)
     leagues_event = models.ForeignKey(LeaguesEvent, related_name='matches', on_delete=models.CASCADE)
