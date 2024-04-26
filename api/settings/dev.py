@@ -8,5 +8,8 @@ DATABASES = {
         "PASSWORD": env("POSTGRES_PASSWORD"),
         "HOST": env("PG_HOST"),
         "PORT": env("PG_PORT"),
+    },
+    "TEST": {
+        "NAME": "mytestdb",
     }
 }
