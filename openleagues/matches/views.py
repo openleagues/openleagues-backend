@@ -20,33 +20,29 @@ class MatchesView(generics.ListAPIView):
         return queryset
 
 class MatchScoreUpdateView(generics.CreateAPIView):
-    queryset = Match.objects.all()
     serializer_class = MatchScoreSerializer
-    #permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
-         # Get the match instance based on the URL parameter or any other method you use to retrieve it
-        match_id = kwargs.get('match_id')
-        match = Match.objects.get(id=match_id)
+                # Retrieve match instance based on match_id from path variable
+        match_id = self.kwargs.get('match_id')
+        try:
+            match = Match.objects.get(id=match_id)
+        except Match.DoesNotExist:
+            return Response({"error": "Match not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Check if the user is authenticated
-        if not request.user.is_authenticated:
-            return Response({'error': 'Authentication credentials were not provided.'}, status=status.HTTP_401_UNAUTHORIZED)
+        # Check if user is part of either team in the match
+        if not (request.user in match.team1.members.all() or request.user in match.team2.members.all()):
+            return Response({"error": "You are not a member of either team in the match."}, status=status.HTTP_403_FORBIDDEN)
 
-        # Check if the user is a member of either of the teams in the match
-        if request.user not in match.team1.members.all() and request.user not in match.team2.members.all():
-            return Response({'error': 'You are not a member of either team in this match.'}, status=status.HTTP_403_FORBIDDEN)
-
-        # Serialize and validate the request data
+        # Continue with serializer logic to create MatchScore
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-        # # Save the match score
-        # match_score = serializer.save()
-
-        # # Associate the match score with the match
-        # match.score = match_score
-        # match.save()
+        # Add created MatchScore to the match
+        match.score = serializer.instance
+        match.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

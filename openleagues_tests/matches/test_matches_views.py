@@ -6,53 +6,66 @@ from openleagues.teams.models import Team
 from openleagues.matches.models import Match, SetScore, MatchScore
 from openleagues.leagues_event.models import LeaguesEvent
 from rest_framework_simplejwt.tokens import AccessToken
-from openleagues_tests.factories import LeaguesEventFactory
+from openleagues_tests.factories import LeaguesEventFactory, UserFactory
 
 
-class AddMatchScoreViewTestCase(TestCase):
+class MatchScoreCreateViewTestCase(TestCase):
     def setUp(self):
-        self.client = APIClient()
-        self.user = User.objects.create_user(username='test_user', first_name="test", last_name="tester", email='test@example.com', password='test_password')
+        # Create test user
+        self.user = UserFactory()
+
+        # Create LeagueEvent
+        self.leagues_event = LeaguesEventFactory(status="in-progress")
+
+        # Create teams and match
         self.team1 = Team.objects.create(name='Team 1')
         self.team2 = Team.objects.create(name='Team 2')
-        self.team1.members.add(self.user)  # Add the user to team1
-        self.leagues_event = LeaguesEventFactory(status="in-progress")
         self.match = Match.objects.create(team1=self.team1, team2=self.team2, leagues_event=self.leagues_event)
-        self.set_score_data = {'team1': 6, 'team2': 4}
-        self.match_score_data = {'sets': [self.set_score_data], 'confirmation': False}
 
-        self.access_token = AccessToken.for_user(self.user)
+        # Create APIClient
+        self.client = APIClient()
 
-    def test_add_match_score_as_team_member(self):
-        # Authenticate the user
-        self.client.force_login(self.user)
+        # Obtain access token for test user
+        access_token = AccessToken.for_user(self.user)
+        self.headers = {'Authorization': f'Bearer {access_token}'}
 
-        # Include the token in the request's Authorization header
-        headers = {'Authorization': f'Bearer {self.access_token}'}
+    def test_create_match_score_happy_path(self):
+        # Sample match score data
+        match_score_data = {
+            "sets": [
+                {"team1": 6, "team2": 4},
+                {"team1": 7, "team2": 5}
+            ],
+            "confirmation": True
+        }
 
-        # Send a POST request to add match score
-        response = self.client.post(f'/api/v1/matches/{self.match.id}/update-score/', self.match_score_data, format='json', headers=headers)
-        print(response.data)
+        self.team1.members.add(self.user)
 
-        # Check that the response status code is 201 Created
+        # Make POST request to create match score with access token in headers
+        
+        response = self.client.post(f'/api/v1/matches/{self.match.id}/update-score/', match_score_data, format='json', headers=self.headers)
+
+        # Check response status code
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    # def test_add_match_score_without_authentication(self):
-    #     # Send a POST request without authenticating the user
-    #     response = self.client.post(f'/matches/{self.match.id}/update-score/', self.match_score_data, format='json')
+        # Check if match score was created and associated with the match
+        self.assertTrue(Match.objects.filter(id=self.match.id, score=response.data['id']).exists())
+    
+    def test_create_match_score_user_not_in_either_team(self):
+        # Sample match score data
+        match_score_data = {
+            "sets": [
+                {"team1": 6, "team2": 4},
+                {"team1": 7, "team2": 5}
+            ],
+            "confirmation": True
+        }
 
-    #     # Check that the response status code is 401 Unauthorized
-    #     self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        # Make POST request to create match score with access token in headers
+        
+        response = self.client.post(f'/api/v1/matches/{self.match.id}/update-score/', match_score_data, format='json', headers=self.headers)
 
-    # def test_add_match_score_as_non_team_member(self):
-    #     # Create a new user who is not a member of either team
-    #     new_user = User.objects.create_user(first_name="newtest", last_name="newtester", username='new_user', email='new@example.com', password='new_password')
+        # Check response status code
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data['error'], "You are not a member of either team in the match.")
 
-    #     # Authenticate the new user
-    #     self.client.force_login(new_user)
-
-    #     # Send a POST request to add match score
-    #     response = self.client.post(f'/matches/{self.match.id}/update-score/', self.match_score_data, format='json')
-
-    #     # Check that the response status code is 403 Forbidden
-    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

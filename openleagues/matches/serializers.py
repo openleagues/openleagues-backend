@@ -17,16 +17,21 @@ class MatchScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = MatchScore
         fields = '__all__'
-
+    
     def create(self, validated_data):
-        sets_data = validated_data.pop('sets', None)
+        # Extract sets data from validated data
+        sets_data = validated_data.pop('sets')
+
+        # Create MatchScore instance
         match_score = MatchScore.objects.create(**validated_data)
-        
-        if sets_data:
-            for set_data in sets_data:
-                SetScore.objects.create(match_score=match_score, **set_data)
-        
+
+        # Create SetScore instances and associate with MatchScore
+        for set_data in sets_data:
+            set_score = SetScore.objects.create(**set_data)
+            match_score.sets.add(set_score)
+
         return match_score
+
 
 class MatchSerializer(serializers.ModelSerializer):
     score = MatchScoreSerializer(required=False)
@@ -34,15 +39,3 @@ class MatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Match
         fields = '__all__'
-    
-    # def create(self, validated_data):
-    #     score_data = validated_data.pop('score', None)
-    #     match = Match.objects.create(**validated_data)
-        
-    #     if score_data:
-    #         sets_data = score_data.pop('sets')
-    #         match_score = MatchScore.objects.create(**score_data)
-    #         for set_data in sets_data:
-    #             SetScore.objects.create(match_score=match_score, **set_data)
-        
-    #     return match
