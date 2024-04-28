@@ -50,8 +50,4 @@ class LeaguesEventFactory(factory.django.DjangoModelFactory):
     minimum_level = faker.random_element(elements=['1.0', '3.0','4.5'])
     total_spots = faker.random_digit()
 
-<<<<<<< HEAD
     status = faker.random_element(elements=["open","in-progress","completed","cancelled"])
-=======
-    status = faker.random_element(elements=["open","inprogress","completed","cancelled"])
->>>>>>> 8386f15 (fix tests)
