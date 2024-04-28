@@ -30,7 +30,7 @@ collectstatic:
 	docker compose exec api python3 manage.py collectstatic --no-input --clear
 
 test:
-	docker compose exec api pytest -p no:warnings --cov=.
+	docker compose exec api pytest -p no:warnings --cov=. openleagues_tests/
 
 test-html:
 	docker compose exec api pytest -p no:warnings --cov=. --cov-report html

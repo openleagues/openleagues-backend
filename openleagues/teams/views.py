@@ -1,22 +1,34 @@
 from openleagues.teams.models import Team
 from openleagues.teams.serializers import TeamSerializer, UserAddRemoveSerializer
 from openleagues.authentication.models import User
+from openleagues.leagues_event.models import LeaguesEvent
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.http import Http404
+
 
 class TeamList(generics.ListCreateAPIView):
     serializer_class = TeamSerializer
-    permission_classes = (IsAuthenticated, )
+    queryset = Team.objects.all()
+
+class LeagueEventTeamList(generics.ListCreateAPIView):
+    serializer_class = TeamSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        return Team.objects.filter(members=user)
-
-
+        league_event_id = self.kwargs.get('league_event_id')
+        league_event = LeaguesEvent.objects.filter(id=league_event_id).first()
+        # Filter teams by league event ID and whether they are public
+        if not league_event:
+            raise Http404()
+        queryset = league_event.teams.filter(public=True)
+        return queryset
+    
 class UserAddToTeamView(generics.UpdateAPIView):
     queryset = Team.objects.all()
     lookup_field = "uid"
+    permission_classes = (IsAuthenticated, )
 
     def update(self, request, *args, **kwargs):
         team = self.get_object()
@@ -27,7 +39,7 @@ class UserAddToTeamView(generics.UpdateAPIView):
         user = request.user
         team.members.add(user)
 
-        return Response(TeamSerializer(team).data, status=status.HTTP_200_OK)
+        return Response({"data":TeamSerializer(team).data, "message":"Successfully joined a team"}, status=status.HTTP_200_OK)
 
 class UserRemoveFromTeamView(generics.UpdateAPIView):
     queryset = Team.objects.all()
@@ -37,4 +49,4 @@ class UserRemoveFromTeamView(generics.UpdateAPIView):
         team = self.get_object()
         user = request.user
         team.members.remove(user)
-        return Response(TeamSerializer(team).data, status=status.HTTP_200_OK)
+        return Response({"data":TeamSerializer(team).data, "message":"Successfully left a team"}, status=status.HTTP_200_OK)
